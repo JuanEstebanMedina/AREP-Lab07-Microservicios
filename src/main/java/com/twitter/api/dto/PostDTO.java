@@ -16,7 +16,7 @@ public class PostDTO {
     private Long id;
     
     @NotNull(message = "El ID del usuario es requerido")
-    private Long usuarioId;
+    private Long userId;
     
     @NotNull(message = "El ID del stream es requerido")
     private Long streamId;

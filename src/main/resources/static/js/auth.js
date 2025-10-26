@@ -4,50 +4,47 @@
 // so login is implemented by fetching users and matching username+password.
 // This is acceptable for a lab/demo only.
 
-(function(window){
+(function (window) {
   const API_BASE = '/api';
 
-  async function fetchUsers(){
+  async function fetchUsers() {
     const res = await fetch(API_BASE + '/users');
     return res.ok ? res.json() : [];
   }
 
-  async function register({username,email,password}){
+  async function register({ username, email, password }) {
     const res = await fetch(API_BASE + '/users', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username,email,password})
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, password })
     });
-    if(!res.ok) throw await res.json();
+    if (!res.ok) throw await res.json();
     return res.json();
   }
 
-  async function login({username,password}){
-    const users = await fetchUsers();
-    const match = users.find(u => u.username === username && u.password === password);
-    if(match){
-      // backend DTOs don't return password, but H2 seed data and the API in this lab
-      // stores passwords in clear; when created via API, password won't be returned,
-      // so a login by password will only work for pre-seeded users or by testing flows.
-      const user = { id: match.id, username: match.username, email: match.email };
+  async function login({ username, password }) {
+    const basic = 'Basic ' + btoa(`${username}:${password}`);
+
+    // Probamos acceder a un endpoint protegido
+    const res = await fetch(API_BASE + '/users', { // o cualquier endpoint protegido
+      headers: { Authorization: basic }
+    });
+
+    if (res.ok) {
+      const user = await res.json().catch(() => ({ username }));
+      sessionStorage.setItem('AUTH', basic);
       localStorage.setItem('mini_twitter_user', JSON.stringify(user));
       return user;
+    } else {
+      throw new Error('Credenciales inválidas');
     }
-    // If password matching doesn't work because API doesn't return password, fall back to username-only:
-    const byName = users.find(u => u.username === username);
-    if(byName){
-      // Treat this as a successful login (lab convenience). Store user.
-      const user = { id: byName.id, username: byName.username, email: byName.email };
-      localStorage.setItem('mini_twitter_user', JSON.stringify(user));
-      return user;
-    }
-    throw new Error('Usuario o contraseña inválidos');
   }
 
-  function logout(){
+  function logout() {
+    sessionStorage.removeItem('AUTH');
     localStorage.removeItem('mini_twitter_user');
   }
 
-  function getCurrentUser(){
+  function getCurrentUser() {
     const s = localStorage.getItem('mini_twitter_user');
     return s ? JSON.parse(s) : null;
   }

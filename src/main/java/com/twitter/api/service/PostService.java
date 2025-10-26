@@ -3,7 +3,7 @@ package com.twitter.api.service;
 import com.twitter.api.dto.PostDTO;
 import com.twitter.api.entity.Post;
 import com.twitter.api.entity.Stream;
-import com.twitter.api.entity.Usuario;
+import com.twitter.api.entity.User;
 import com.twitter.api.exception.ResourceNotFoundException;
 import com.twitter.api.repository.PostRepository;
 import com.twitter.api.repository.StreamRepository;
@@ -39,15 +39,15 @@ public class PostService {
     
     @Transactional
     public PostDTO createPost(PostDTO postDTO) {
-        Usuario usuario = userRepository.findById(postDTO.getUsuarioId())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + postDTO.getUsuarioId()));
+        User user = userRepository.findById(postDTO.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User no encontrado con id: " + postDTO.getUserId()));
         
         Stream stream = streamRepository.findById(postDTO.getStreamId())
                 .orElseThrow(() -> new ResourceNotFoundException("Stream no encontrado con id: " + postDTO.getStreamId()));
         
         Post post = new Post();
         post.setContenido(postDTO.getContenido());
-        post.setUsuario(usuario);
+        post.setUser(user);
         post.setStream(stream);
         
         Post savedPost = postRepository.save(post);
@@ -65,9 +65,9 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostDTO> getPostsByUserId(Long userId) {
         if (!userRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("Usuario no encontrado con id: " + userId);
+            throw new ResourceNotFoundException("User no encontrado con id: " + userId);
         }
-        return postRepository.findByUsuarioIdOrderByCreatedAtDesc(userId)
+        return postRepository.findByUserIdOrderByCreatedAtDesc(userId)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -87,10 +87,10 @@ public class PostService {
     private PostDTO convertToDTO(Post post) {
         PostDTO dto = new PostDTO();
         dto.setId(post.getId());
-        dto.setUsuarioId(post.getUsuario().getId());
+        dto.setUserId(post.getUser().getId());
         dto.setStreamId(post.getStream().getId());
         dto.setContenido(post.getContenido());
-        dto.setUsername(post.getUsuario().getUsername());
+        dto.setUsername(post.getUser().getUsername());
         dto.setStreamNombre(post.getStream().getNombre());
         dto.setCreatedAt(post.getCreatedAt());
         return dto;
