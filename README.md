@@ -344,6 +344,31 @@ Checklist de verificación:
 - [ ] Crear frontend JavaScript (Punto 2)
 - [ ] Deploy en S3 (Punto 3)
 
+
+
+
+
+
+## Despliegue en S3  
+
+Se crea el bucket donde se almacenarán los archivos estáticos:
+
+<img width="2879" height="1184" alt="image" src="https://github.com/user-attachments/assets/bd878602-0425-441d-97a5-d059838be67b" />
+
+
+<img width="2879" height="1302" alt="image" src="https://github.com/user-attachments/assets/bd68ffc0-710a-4a90-b2d3-3646ca9272f6" />
+
+
+Y para cada archivo se habilita el acceso público para que esté disponible en internet.
+
+<img width="2879" height="1384" alt="Captura de pantalla 2025-10-26 152104" src="https://github.com/user-attachments/assets/50fec28f-2bfb-4062-b171-410b39f04bed" />
+
+Resultado:
+
+<img width="2879" height="1461" alt="image" src="https://github.com/user-attachments/assets/4c522a0f-5b9b-400c-86e4-8f723a5db9af" />
+
+
+
 ## 📝 Logs
 
 Los logs están configurados en nivel DEBUG para desarrollo. Verás:
