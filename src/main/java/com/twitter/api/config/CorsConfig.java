@@ -1,18 +1,18 @@
-package com.twitter.api.config;
+// package com.twitter.api.config;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+// import org.springframework.context.annotation.Configuration;
 
-@Configuration
-public class CorsConfig implements WebMvcConfigurer {
-    
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .maxAge(3600);
-    }
-}
+// import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+// @Configuration
+// public class CorsConfig implements WebMvcConfigurer {
+
+//     @Override
+//     public void addCorsMappings(CorsRegistry registry) {
+//     registry.addMapping("/api/**")
+//     .allowedOrigins("*")
+//     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+//     .allowedHeaders("*")
+//     .maxAge(3600);
+//     }
+// }

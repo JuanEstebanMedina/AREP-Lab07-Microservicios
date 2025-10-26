@@ -12,11 +12,11 @@ API REST monolítico tipo Twitter que permite crear posts de 140 caracteres y re
 
 ## 📋 Características
 
-- ✅ CRUD completo de Usuarios
+- ✅ CRUD completo de Users
 - ✅ CRUD completo de Streams (hilos)
 - ✅ CRUD completo de Posts
 - ✅ Validación de 140 caracteres máximo por post
-- ✅ Relaciones entre entidades (Usuario → Posts, Stream → Posts)
+- ✅ Relaciones entre entidades (User → Posts, Stream → Posts)
 - ✅ Ordenamiento de posts por fecha (más recientes primero)
 - ✅ Base de datos H2 en memoria (desarrollo)
 - ✅ Manejo de excepciones global
@@ -52,7 +52,7 @@ twitter-clone-api/
 │   │   │   │   ├── StreamDTO.java
 │   │   │   │   └── PostDTO.java
 │   │   │   ├── entity/
-│   │   │   │   ├── Usuario.java
+│   │   │   │   ├── User.java
 │   │   │   │   ├── Stream.java
 │   │   │   │   └── Post.java
 │   │   │   ├── repository/
@@ -182,7 +182,7 @@ Configuración en `application-mysql.properties`
 **Ejemplo POST /api/posts:**
 ```json
 {
-  "usuarioId": 1,
+  "userId": 1,
   "streamId": 1,
   "contenido": "Este es mi primer post! 🚀"
 }
@@ -218,7 +218,7 @@ curl -X POST http://localhost:8080/api/streams \
 curl -X POST http://localhost:8080/api/posts \
   -H "Content-Type: application/json" \
   -d '{
-    "usuarioId": 1,
+    "userId": 1,
     "streamId": 1,
     "contenido": "Mi primer post en el sistema!"
   }'
@@ -243,7 +243,7 @@ curl http://localhost:8080/api/posts/user/1
 
 ### Entidades
 
-**Usuario**
+**User**
 - id (Long, PK)
 - username (String, único)
 - email (String, único)
@@ -260,7 +260,7 @@ curl http://localhost:8080/api/posts/user/1
 
 **Post**
 - id (Long, PK)
-- usuarioId (Long, FK)
+- userId (Long, FK)
 - streamId (Long, FK)
 - contenido (String, max 140 caracteres)
 - createdAt (LocalDateTime)

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mini-Twitter - Frontend</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <header>
+    <div class="topbar">
+      <h2 style="margin:0">Mini-Twitter</h2>
+      <div class="spacer"></div>
+    </div>
+  </header>
+
+  <!-- Login / Register screen -->
+  <div id="authView" class="container">
+    <h3>Iniciar sesión o crear usuario</h3>
+    <div class="row">
+      <div class="col">
+        <label for="loginUsername">Username</label>
+        <input id="loginUsername" placeholder="ej: juanperez" />
+      </div>
+      <div class="col">
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" type="password" placeholder="password" />
+      </div>
+      <div style="width:140px;align-self:end">
+        <button id="loginBtn" class="btn-primary">Iniciar sesión</button>
+      </div>
+    </div>
+
+    <hr />
+
+    <h4>Crear nuevo usuario</h4>
+    <div class="row">
+      <div class="col">
+        <label for="newUsername">Username</label>
+        <input id="newUsername" placeholder="ej: ana" />
+      </div>
+      <div class="col">
+        <label for="newEmail">Email</label>
+        <input id="newEmail" placeholder="ej: ana@example.com" />
+      </div>
+      <div class="col">
+        <label for="newPassword">Password</label>
+        <input id="newPassword" type="password" placeholder="min 6 chars" />
+      </div>
+      <div style="width:160px;align-self:end">
+        <button id="registerBtn" class="btn-secondary">Crear cuenta</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main app screen (hidden until login) -->
+  <div id="appView" class="container" style="display:none">
+    <div class="row" style="align-items:center;margin-bottom:8px">
+      <div class="col small">Usuario: <span id="currentUserDisplay"></span></div>
+      <div style="width:120px">
+        <button id="logoutBtn" class="btn-secondary">Cerrar sesión</button>
+      </div>
+    </div>
+
+    <h3>Mini-Twitter</h3>
+
+    <div class="row">
+      <div style="width:260px">
+        <label>Categorías</label>
+        <div id="categories" style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn-secondary small" data-stream="all">Global</button>
+          <!-- stream buttons will be injected here -->
+        </div>
+        <hr />
+        <label for="streamSelect">Seleccionar stream (crear o seleccionar)</label>
+        <select id="streamSelect"></select>
+        <label for="streamNombre">Nuevo stream</label>
+        <input id="streamNombre" placeholder="Nombre del stream" />
+        <label for="streamDescripcion">Descripción</label>
+        <input id="streamDescripcion" placeholder="Descripción (opcional)" />
+        <div style="margin-top:8px">
+          <button id="createStreamBtn" class="btn-secondary">Crear stream</button>
+        </div>
+      </div>
+
+      <div class="col">
+        <label for="postContent">Contenido</label>
+        <textarea id="postContent" maxlength="140" placeholder="¿Qué está pasando?"></textarea>
+        <div class="controls" style="margin-top:8px">
+          <div class="counter"><span id="charsLeft">140</span> caracteres restantes</div>
+          <div style="flex:1"></div>
+          <button id="refreshBtn" class="btn-secondary">Refrescar</button>
+          <button id="postBtn" class="btn-primary">Publicar</button>
+        </div>
+
+        <hr />
+        <div id="postsContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>

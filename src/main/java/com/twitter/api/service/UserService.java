@@ -1,6 +1,7 @@
 package com.twitter.api.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -9,17 +10,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.twitter.api.dto.UserDTO;
-import com.twitter.api.entity.Usuario;
+import com.twitter.api.entity.User;
 import com.twitter.api.exception.ResourceNotFoundException;
 import com.twitter.api.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
     
     @Transactional(readOnly = true)
     public List<UserDTO> getAllUsers() {
@@ -31,9 +38,9 @@ public class UserService {
     
     @Transactional(readOnly = true)
     public UserDTO getUserById(Long id) {
-        Usuario usuario = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
-        return convertToDTO(usuario);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("user no encontrado con id: " + id));
+        return convertToDTO(user);
     }
     
     @Transactional
@@ -44,68 +51,70 @@ public class UserService {
         if (userRepository.existsByEmail(userDTO.getEmail())) {
             throw new IllegalArgumentException("El email ya existe");
         }
-        
-        Usuario usuario = new Usuario();
-        usuario.setUsername(userDTO.getUsername());
-        usuario.setEmail(userDTO.getEmail());
-        usuario.setPassword(userDTO.getPassword()); // En producción, usar BCrypt
-        
-        Usuario savedUsuario = userRepository.save(usuario);
-        return convertToDTO(savedUsuario);
+
+        User user = User.builder()
+                .username(userDTO.getUsername())
+                .email(userDTO.getEmail())
+                .password(passwordEncoder.encode(userDTO.getPassword()))
+                .build();
+
+        User savedUser = userRepository.save(user);
+        return convertToDTO(savedUser);
     }
     
     @Transactional
     public UserDTO updateUser(Long id, UserDTO userDTO) {
-        Usuario usuario = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("user no encontrado con id: " + id));
         
-        if (!usuario.getUsername().equals(userDTO.getUsername()) && 
+        if (!user.getUsername().equals(userDTO.getUsername()) && 
             userRepository.existsByUsername(userDTO.getUsername())) {
             throw new IllegalArgumentException("El username ya existe");
         }
         
-        if (!usuario.getEmail().equals(userDTO.getEmail()) && 
+        if (!user.getEmail().equals(userDTO.getEmail()) && 
             userRepository.existsByEmail(userDTO.getEmail())) {
             throw new IllegalArgumentException("El email ya existe");
         }
         
-        usuario.setUsername(userDTO.getUsername());
-        usuario.setEmail(userDTO.getEmail());
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-            usuario.setPassword(userDTO.getPassword());
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         }
         
-        Usuario updatedUsuario = userRepository.save(usuario);
-        return convertToDTO(updatedUsuario);
+        User updatedUser = userRepository.save(user);
+        return convertToDTO(updatedUser);
     }
     
     @Transactional
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Usuario no encontrado con id: " + id);
+            throw new ResourceNotFoundException("user no encontrado con id: " + id);
         }
         userRepository.deleteById(id);
     }
     
-    private UserDTO convertToDTO(Usuario usuario) {
+    private UserDTO convertToDTO(User user) {
         UserDTO dto = new UserDTO();
-        dto.setId(usuario.getId());
-        dto.setUsername(usuario.getUsername());
-        dto.setEmail(usuario.getEmail());
-        dto.setCreatedAt(usuario.getCreatedAt());
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setCreatedAt(user.getCreatedAt());
         // No incluir password en el DTO de respuesta
         return dto;
     }
 
     private void createDefaultAdminUser() {
-        // Comprueba si ya existe un usuario con username 'admin'
+        // Comprueba si ya existe un user con username 'admin'
         if (userRepository.findByUsername("admin").isEmpty()) {
-            // La entidad del proyecto es `Usuario` (no tiene campos role/enabled),
-            // así que creamos un Usuario básico con username, email y password encriptada.
-            Usuario admin = new Usuario();
-            admin.setUsername("admin");
-            admin.setEmail("admin@example.com");
-            admin.setPassword("juanito");
+            // La entidad del proyecto es `user` (no tiene campos role/enabled),
+            // la construimos con el builder de Lombok y encriptamos la contraseña
+            User admin = User.builder()
+                    .username("admin")
+                    .email("admin@example.com")
+                    .password(passwordEncoder.encode("juanito"))
+                    .build();
             userRepository.save(admin);
             System.out.println("Admin user created");
         } else {
