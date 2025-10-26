@@ -12,11 +12,11 @@ API REST monolítico tipo Twitter que permite crear posts de 140 caracteres y re
 
 ## 📋 Características
 
-- ✅ CRUD completo de Usuarios
+- ✅ CRUD completo de Users
 - ✅ CRUD completo de Streams (hilos)
 - ✅ CRUD completo de Posts
 - ✅ Validación de 140 caracteres máximo por post
-- ✅ Relaciones entre entidades (Usuario → Posts, Stream → Posts)
+- ✅ Relaciones entre entidades (User → Posts, Stream → Posts)
 - ✅ Ordenamiento de posts por fecha (más recientes primero)
 - ✅ Base de datos H2 en memoria (desarrollo)
 - ✅ Manejo de excepciones global
@@ -52,7 +52,7 @@ twitter-clone-api/
 │   │   │   │   ├── StreamDTO.java
 │   │   │   │   └── PostDTO.java
 │   │   │   ├── entity/
-│   │   │   │   ├── Usuario.java
+│   │   │   │   ├── User.java
 │   │   │   │   ├── Stream.java
 │   │   │   │   └── Post.java
 │   │   │   ├── repository/
@@ -182,7 +182,7 @@ Configuración en `application-mysql.properties`
 **Ejemplo POST /api/posts:**
 ```json
 {
-  "usuarioId": 1,
+  "userId": 1,
   "streamId": 1,
   "contenido": "Este es mi primer post! 🚀"
 }
@@ -218,7 +218,7 @@ curl -X POST http://localhost:8080/api/streams \
 curl -X POST http://localhost:8080/api/posts \
   -H "Content-Type: application/json" \
   -d '{
-    "usuarioId": 1,
+    "userId": 1,
     "streamId": 1,
     "contenido": "Mi primer post en el sistema!"
   }'
@@ -243,7 +243,7 @@ curl http://localhost:8080/api/posts/user/1
 
 ### Entidades
 
-**Usuario**
+**User**
 - id (Long, PK)
 - username (String, único)
 - email (String, único)
@@ -260,7 +260,7 @@ curl http://localhost:8080/api/posts/user/1
 
 **Post**
 - id (Long, PK)
-- usuarioId (Long, FK)
+- userId (Long, FK)
 - streamId (Long, FK)
 - contenido (String, max 140 caracteres)
 - createdAt (LocalDateTime)
@@ -343,31 +343,6 @@ Checklist de verificación:
 - [ ] Desplegar en AWS Lambda (Punto 6)
 - [ ] Crear frontend JavaScript (Punto 2)
 - [ ] Deploy en S3 (Punto 3)
-
-
-
-
-
-
-## Despliegue en S3  
-
-Se crea el bucket donde se almacenarán los archivos estáticos:
-
-<img width="2879" height="1184" alt="image" src="https://github.com/user-attachments/assets/bd878602-0425-441d-97a5-d059838be67b" />
-
-
-<img width="2879" height="1302" alt="image" src="https://github.com/user-attachments/assets/bd68ffc0-710a-4a90-b2d3-3646ca9272f6" />
-
-
-Y para cada archivo se habilita el acceso público para que esté disponible en internet.
-
-<img width="2879" height="1384" alt="Captura de pantalla 2025-10-26 152104" src="https://github.com/user-attachments/assets/50fec28f-2bfb-4062-b171-410b39f04bed" />
-
-Resultado:
-
-<img width="2879" height="1461" alt="image" src="https://github.com/user-attachments/assets/4c522a0f-5b9b-400c-86e4-8f723a5db9af" />
-
-
 
 ## 📝 Logs
 
