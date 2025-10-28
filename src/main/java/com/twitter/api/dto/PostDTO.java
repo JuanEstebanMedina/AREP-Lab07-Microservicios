@@ -12,19 +12,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDTO {
-    
+
     private Long id;
-    
-    @NotNull(message = "El ID del usuario es requerido")
+
     private Long userId;
-    
+
     @NotNull(message = "El ID del stream es requerido")
     private Long streamId;
-    
+
     @NotBlank(message = "El contenido no puede estar vacío")
     @Size(max = 140, message = "El post no puede exceder 140 caracteres")
     private String contenido;
-    
+
     private String username;
     private String streamNombre;
     private LocalDateTime createdAt;
